@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global:true,
       secret: process.env.JWT_SECRET || 'clave_super_secreta_jwt', 
-      signOptions: { expiresIn: '15m' }, // Vence a los 15m , para probarlo lo voy a cambiar a 60s
+      signOptions: { expiresIn: '60s' }, // Vence a los 15m , para probarlo lo voy a cambiar a 60s
     }),
   ],
   controllers: [AuthController],
