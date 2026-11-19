@@ -144,7 +144,7 @@ export class AuthService {
       const payload = this.jwtService.verify(token);
 
       // Generamos uno nuevo con el mismo payload (automáticamente le dará otros 15 min)
-      const nuevoPayload = { sub: payload.sub, correo: payload.correo, username: payload.username, rol: payload.rol };
+      const nuevoPayload = { sub: payload.sub, correo: payload.correo, username: payload.username, perfil: payload.perfil };
       return { token: this.jwtService.sign(nuevoPayload) };
     } catch (e) {
       throw new UnauthorizedException('Token inválido o vencido'); // 401
