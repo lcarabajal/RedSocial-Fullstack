@@ -26,7 +26,7 @@ export class PublicacionesController {
     @Param('id') id: string, 
     @Query('limit') limit: string = '3'
   ) {
-    return this.pubService.obtenerPorUsuario(id, Number(limit));
+    return this.pubService.obtenerPorUsuarioConComentarios(id, Number(limit));
   }
 
   @Post(':id/like')
@@ -53,17 +53,25 @@ export class PublicacionesController {
     return this.pubService.crear(body.texto, body.userId, file);
   }
 
-
-  //Seccion comentarios
+  // @Get(':id/comentarios')
+  // obtenerComentarios(
+  //   @Param('id') id:string
+  // ){
+  //   return this.pubService.obtenerUnaConComentarios(id);
+  // }
+  
   @Get(':id/comentarios')
-  obtenerComentarios(
+  obtenerComentariosPaginados(
     @Param('id') id: string,
     @Query('page') page: string = '1',
-    @Query('limit') limit: string = '5'
-  ) {
-    return this.pubService.obtenerComentarios(id, Number(page), Number(limit));
+    @Query('limit') limit: string = '5',
+  ){
+    return this.pubService.obtenerComentariosPaginados(
+      id,
+      Math.max(1, Number(page) || 1),
+      Math.max(1, Number(limit) || 5),
+    );
   }
-
   @Post(':id/comentarios')
   agregarComentario(
     @Param('id') id: string,

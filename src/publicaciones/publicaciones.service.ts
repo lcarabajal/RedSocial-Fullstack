@@ -17,6 +17,41 @@ export class PublicacionesService {
       );
   }
 
+  async obtenerTodasConComentarios() {
+    return this.pubModel.aggregate([
+      {
+        $lookup: {
+          from: 'comentarios',       // Nombre exacto de la colección en MongoDB
+          localField: '_id',         // Campo en 'publicacions'
+          foreignField: 'publicacion', // Campo en 'comentarios' que guarda el ID del post
+          pipeline: [
+            { $sort: { fecha: -1 } }, // Opcional: ordena los comentarios del más nuevo al más viejo
+          ],
+          as: 'comentarios',         // Nombre de la nueva propiedad en el JSON final
+        },
+      },
+      { $sort: { createdAt: -1 } },  // Ordena las publicaciones por fecha
+    ]);
+  }
+
+  // Traer UNA sola publicación por ID con sus comentarios
+  async obtenerUnaConComentarios(id: string) {
+    const resultado = await this.pubModel.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'comentarios',
+          localField: '_id',
+          foreignField: 'publicacion',
+          pipeline: [{ $sort: { fecha: -1 } }],
+          as: 'comentarios',
+        },
+      },
+    ]);
+
+    return resultado[0] || null;
+  }
+
   async obtenerComentarios(pubId: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
     return this.comentarioModel.find({ publicacion: new Types.ObjectId(pubId) })
@@ -89,6 +124,104 @@ export class PublicacionesService {
       .populate('usuario', 'nombre apellido username imagenPerfilUrl')
       .exec();
   }
+
+  async obtenerPorUsuarioConComentarios(usuarioId: string, limit:number) {
+    if (!Types.ObjectId.isValid(usuarioId)) {
+      throw new BadRequestException('El ID de usuario no es válido');
+    }
+
+    return this.pubModel.aggregate([
+      {
+        $match: {
+          usuario: new Types.ObjectId(usuarioId),
+          // Si manejás baja lógica en publicaciones, podés sumar: activo: { $ne: false }
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $limit: Number(limit)
+      },
+      // Traemos los datos del autor del post (útil si reutilizás tu tarjeta de publicación)
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: 'usuario',
+          foreignField: '_id',
+          pipeline: [{ $project: { password: 0 } }],
+          as: 'usuario',
+        },
+      },
+      {
+        $unwind: {
+          path: '$usuario',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Traemos los comentarios de cada publicación junto con el usuario que comentó
+      {
+        $lookup: {
+          from: 'comentarios',
+          localField: '_id',
+          foreignField: 'publicacion',
+          pipeline: [
+            { $sort: { fecha: -1 } },
+            {
+              $limit: Number(limit)
+            },
+            {
+              $lookup: {
+                from: 'usuarios',
+                localField: 'usuario', // Cambialo si en tu esquema de Comentario se llama 'autor'
+                foreignField: '_id',
+                pipeline: [
+                  { $project: { username: 1, imagenPerfilUrl: 1, nombre: 1, apellido: 1 } },
+                ],
+                as: 'usuario',
+              },
+            },
+            {
+              $unwind: {
+                path: '$usuario',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+          ],
+          as: 'comentarios',
+        },
+      },
+    ]);
+  }
+
+  async obtenerComentariosPaginados(publicacionId: string, page: number, limit: number) {
+    if (!Types.ObjectId.isValid(publicacionId)) {
+      throw new BadRequestException('El ID de la publicación no es válido');
+    }
+
+    const skip = (page - 1) * limit;
+    const filtro = { publicacion: new Types.ObjectId(publicacionId) };
+
+    const [comentarios, total] = await Promise.all([
+      this.comentarioModel
+        .find(filtro)
+        .sort({ fecha: -1 }) // Más recientes primero
+        .skip(skip)
+        .limit(limit)
+        .populate('usuario', 'username nombre apellido imagenPerfilUrl')
+        .exec(),
+      this.comentarioModel.countDocuments(filtro),
+    ]);
+
+    return {
+      comentarios,
+      total,
+      paginaActual: page,
+      totalPaginas: Math.ceil(total / limit),
+      hayMas: skip + comentarios.length < total,
+    };
+  }
+
 
   // Dar o quitar like
   async toggleLike(idPublicacion: string, userId: string) {
