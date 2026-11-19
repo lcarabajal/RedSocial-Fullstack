@@ -28,10 +28,11 @@ export class PublicacionDetalle implements OnInit {
 
   publicacionId = '';
   comentarios = signal<any[]>([]);
-  totalComentarios = signal<number>(0);
   paginaActual = signal<number>(1);
-  hayMas = signal<boolean>(false);
-  cargandoComentarios = signal<boolean>(false);
+  // hayMas = signal<boolean>(false);
+  totalPaginas = signal<number>(1);
+  totalComentarios = signal<number>(0);
+  cargando = signal<boolean>(false);
   private readonly LIMITE = 5;
   
 
@@ -50,7 +51,6 @@ export class PublicacionDetalle implements OnInit {
       this.cargarComentarios(1);
       this.cargarPublicacion(id);
     }
-
   }
 
   async darDeBajaPublicacion(idPublicacion: string) {
@@ -73,30 +73,59 @@ export class PublicacionDetalle implements OnInit {
   }
 
   cargarComentarios(pagina: number) {
-    if (this.cargandoComentarios()) return;
-    this.cargandoComentarios.set(true);
+    if (pagina < 1) return;
+    this.cargando.set(true);
 
     this.obtenerComentarios(this.publicacionId, pagina, this.LIMITE)
       .subscribe({
         next: (res) => {
-          this.comentarios.update((actuales) => {
-            if (pagina === 1) return res.comentarios;
+          this.comentarios.set(res.comentarios);
+          this.paginaActual.set(res.paginaActual);
+          this.totalComentarios.set(res.total);
+          this.totalPaginas.set(Math.max(1, res.totalPaginas));
+          this.cargando.set(false);
+          // this.comentarios.update((actuales) => {
+            // if (pagina === 1) return res.comentarios;
 
             // Evita duplicados en @for si se agregó un comentario nuevo mientras se paginaba
-            const idsExistentes = new Set(actuales.map((c) => c._id));
-            const nuevos = res.comentarios.filter((c) => !idsExistentes.has(c._id));
-            return [...actuales, ...nuevos];
-          });
+            // const idsExistentes = new Set(actuales.map((c) => c._id));
+            // const nuevos = res.comentarios.filter((c) => !idsExistentes.has(c._id));
+            // return [...actuales, ...nuevos];
+          // });
 
-          this.totalComentarios.set(res.total);
-          this.paginaActual.set(res.paginaActual);
-          this.hayMas.set(res.hayMas);
-          this.cargandoComentarios.set(false);
+          // this.totalComentarios.set(res.total);
+          // this.paginaActual.set(res.paginaActual);
+          // this.hayMas.set(res.hayMas);
+          // this.cargandoComentarios.set(false);
 
           console.log(this.comentarios());
         },
-        error: () => this.cargandoComentarios.set(false),
+        error: () => this.cargando.set(false),
       });
+  }
+
+  cambiarPagina(nuevaPagina: number) {
+    if (nuevaPagina < 1 || nuevaPagina > this.totalPaginas() || this.cargando()) {
+      return;
+    }
+    this.cargarComentarios(nuevaPagina);
+  }
+
+  onComentarioCreado(nuevoComentario: any) {
+    // Si estabas en página 1, podés actualizar al instante recortando a 5:
+    if (this.paginaActual() === 1) {
+      this.comentarios.update((actuales) =>
+        [nuevoComentario, ...actuales].slice(0, this.LIMITE)
+      );
+      const nuevoTotal = this.totalComentarios() + 1;
+      this.totalComentarios.set(nuevoTotal);
+      this.totalPaginas.set(Math.ceil(nuevoTotal / this.LIMITE));
+      return;
+    }
+
+    // Si estabas en página 2, 3, etc., volvés a la página 1 desde el back
+    // para ver el comentario recién creado y reordenar las páginas
+    this.cargarComentarios(1);
   }
 
   agregarComentarioALista(nuevoComentario: any) {
@@ -116,11 +145,11 @@ export class PublicacionDetalle implements OnInit {
     });
   }
 
-  cargarMas() {
-    if (this.hayMas()) {
-      this.cargarComentarios(this.paginaActual() + 1);
-    }
-  }
+  // cargarMas() {
+  //   if (this.hayMas()) {
+  //     this.cargarComentarios(this.paginaActual() + 1);
+  //   }
+  // }
 
   escribirComentario() {
     if (this.comentarioForm.invalid) return;

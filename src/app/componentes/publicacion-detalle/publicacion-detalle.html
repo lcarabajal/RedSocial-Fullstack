@@ -2,7 +2,7 @@
 <div class="detalle-container">
   <!-- Publicación Grande -->
   @if (publicacion()) {
-    <div class="post-card grande">
+    <div class="post-card grande gamer-card">
       <div class="post-header">
         <div class="post-meta">
             <img [src]="publicacion().usuario.imagenPerfilUrl" class="avatar-large">
@@ -18,10 +18,10 @@
       }
 
       @if (esAdmin) {
-        <div class="boton">
+        <div>
+          <br>
           <button 
-            class="btn-peligro" 
-            style="margin-left: auto; background: red; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;"
+            class="btn-gamer-danger"
             (click)="darDeBajaPublicacion(publicacion()._id)">
             Dar de baja
           </button>
@@ -66,21 +66,37 @@
           <p>{{ comentario.texto }}</p>
         }
       </div>
+    }@empty {
+      <p class="sin-comentarios">Todavía no hay comentarios.</p>
     }
-    @if(hayMas()){
-      <button
-        type="button"
-        class="btn-cargar-mas"
-        (click)="cargarMas()"
-        [disabled]="cargandoComentarios()">
-        {{ cargandoComentarios() ? 'Cargando...' : 'Cargar más comentarios' }}
-      </button>
+    @if (totalPaginas() > 1) {
+      <div class="paginacion-gamer">
+        <button
+          type="button"
+          class="btn-gamer-outline"
+          (click)="cambiarPagina(paginaActual() - 1)"
+          [disabled]="paginaActual() === 1 || cargando()">
+          ◀ Anterior
+        </button>
+
+        <span class="pagina-info gamer-font">
+          Página {{ paginaActual() }} / {{ totalPaginas() }}
+        </span>
+
+        <button
+          type="button"
+          class="btn-gamer-outline"
+          (click)="cambiarPagina(paginaActual() + 1)"
+          [disabled]="paginaActual() === totalPaginas() || cargando()">
+          Siguiente ▶
+        </button>
+      </div>
     }
     <br>
   </div>
     <br>
     <!-- Escribir Comentario -->
-    <form [formGroup]="comentarioForm" (ngSubmit)="escribirComentario()">
+    <form [formGroup]="comentarioForm" (ngSubmit)="escribirComentario()" class="gamer-card">
         <textarea formControlName="texto" placeholder="Escribe un comentario..."></textarea>
         <button type="submit" [disabled]="comentarioForm.invalid">Comentar</button>
     </form>

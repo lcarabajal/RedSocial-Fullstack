@@ -15,7 +15,7 @@ export class SessionService {
   private readonly KEY_ADVERTENCIA = 'session_advertencia_mostrada';
 
   // Para pruebas: 30 segundos. Para producción: cámbialo a 10 * 60 (600 segundos = 10 min)
-  private readonly SEGUNDOS_ADVERTENCIA = 10*60;
+  private readonly SEGUNDOS_ADVERTENCIA = 30;
 
   iniciarMonitoreo() {
     this.detenerMonitoreo(); // Evita intervalos duplicados
@@ -60,7 +60,7 @@ export class SessionService {
         this.cerrarSesionExpirada();
         return;
       }
-
+      
       const yaAvisoParaEsteToken = localStorage.getItem(this.KEY_ADVERTENCIA) === String(payloadJson.exp);
         
       if (segundosTranscurridos >= this.SEGUNDOS_ADVERTENCIA && !yaAvisoParaEsteToken) {

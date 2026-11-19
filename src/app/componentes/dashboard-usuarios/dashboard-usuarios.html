@@ -3,8 +3,8 @@
   <h2>Gestión de Usuarios</h2>
 
   <!-- Formulario de Creación -->
-  <div class="form-container">
-    <form [formGroup]="usuarioForm" (ngSubmit)="crearUsuario()">
+  <div class="form-container  ">
+    <form [formGroup]="usuarioForm" (ngSubmit)="crearUsuario()" class="gamer-card" >
         <div class="row-inputs">
         <div>
             <label>Nombre</label>
@@ -105,7 +105,7 @@
   </div>
 
   <!-- Tabla de Listado -->
-  <div class="tabla-container" style="margin-top: 2rem;">
+  <div class="tabla-container gamer-card" style="margin-top: 2rem;">
     <h3>Listado de Usuarios</h3>
     <table style="width: 100%; text-align: left;">
       <thead>
@@ -131,6 +131,7 @@
             <td>
               <!-- Botón dinámico de Alta/Baja -->
               <button 
+                
                 (click)="cambiarEstado(u)"
                 [style.background]="u.activo ? '#dc2626' : '#16a34a'"
                 style="color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">

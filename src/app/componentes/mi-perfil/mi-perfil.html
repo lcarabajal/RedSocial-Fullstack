@@ -5,7 +5,7 @@
 <div class="perfil-container">
   @if (usuario) {
     <!-- Tarjeta de Datos de Usuario -->
-    <div class="perfil-header card">
+    <div class="perfil-header card gamer-card">
       <img [src]="usuario.imagenPerfilUrl" alt="Foto de perfil" class="avatar-large">
       <div class="perfil-info">
         <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
@@ -22,7 +22,7 @@
     <h3>Mis últimas publicaciones</h3>
     <div class="mis-publicaciones">
       @for (pub of ultimasPublicaciones(); track pub._id) {
-        <div class="post-card">
+        <div class="post-card gamer-card">
           <small class="fecha">{{ pub.fecha | date:'medium' }}</small>
           <p class="texto-pub">{{ pub.texto }}</p>
           @if(pub.imagenUrl){          

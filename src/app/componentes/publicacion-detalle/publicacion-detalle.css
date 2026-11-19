@@ -225,3 +225,23 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.paginacion-gamer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.pagina-info {
+  color: var(--neon-cyan);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.paginacion-gamer button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}

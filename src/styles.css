@@ -469,3 +469,225 @@ button.btn-delete:hover { background: var(--error-text); color: white; }
   width: 100% !important;
   max-height: 300px; /* Evita que los gráficos crezcan infinitamente hacia abajo */
 }
+
+:root {
+  --bg-main: #070b14;
+  --bg-card: #0f1626;
+  --bg-card-hover: #141d33;
+  --neon-cyan: #00d2ff;
+  --neon-purple: #9d4edd;
+  --neon-pink: #ff2a85;
+  --neon-green: #00f59b;
+  --text-main: #e2e8f0;
+  --text-muted: #8b9bb4;
+  --border-hud: rgba(0, 210, 255, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  /* Fondo con grilla técnica y luz ambiental neón */
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(0, 210, 255, 0.12), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(157, 78, 221, 0.12), transparent 40%),
+    linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, button, .gamer-font {
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ===== TARJETAS ESTILO HUD (Publicaciones, Perfil, Login) ===== */
+.gamer-card {
+  position: relative;
+  background: linear-gradient(160deg, rgba(15, 22, 38, 0.95), rgba(9, 13, 24, 0.98));
+  border: 1px solid var(--border-hud);
+  border-radius: 4px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Barra neón decorativa en el borde superior */
+.gamer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), transparent);
+}
+
+.gamer-card:hover {
+  border-color: rgba(0, 210, 255, 0.55);
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.14);
+}
+
+/* ===== BOTÓN GAMER CON ESQUINAS CORTADAS ===== */
+.btn-gamer {
+  position: relative;
+  background: linear-gradient(135deg, var(--neon-cyan), #0088cc);
+  color: #050914;
+  font-weight: 700;
+  border: none;
+  padding: 0.7rem 1.6rem;
+  cursor: pointer;
+  /* Corte diagonal en esquina superior izquierda e inferior derecha */
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.btn-gamer:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.75));
+}
+
+.btn-gamer:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Variante secundaria (para cancelar, me gusta, cargar más) */
+.btn-gamer-outline {
+  background: rgba(0, 210, 255, 0.08);
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-gamer-outline:hover:not(:disabled) {
+  background: rgba(0, 210, 255, 0.2);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
+}
+
+/* Variante peligro / admin (rojo-magenta neón) */
+.btn-gamer-danger {
+  background: linear-gradient(135deg, var(--neon-pink), #b5175c);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: filter 0.2s ease;
+}
+
+.btn-gamer-danger:hover {
+  filter: drop-shadow(0 0 10px rgba(255, 42, 133, 0.7));
+}
+
+/* ===== INPUTS ESTILO CONSOLA / HUD ===== */
+.gamer-input {
+  width: 100%;
+  background: rgba(7, 11, 20, 0.85);
+  border: 1px solid rgba(139, 155, 180, 0.28);
+  border-left: 3px solid var(--neon-cyan);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gamer-input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.22);
+}
+
+/* ===== AVATAR CON ARO NEÓN + BADGE DE ROL ===== */
+.gamer-avatar {
+  border-radius: 50%;
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.45);
+  object-fit: cover;
+}
+
+.gamer-badge {
+  display: inline-block;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  background: rgba(157, 78, 221, 0.18);
+  color: #d8b4fe;
+  border: 1px solid var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ===== SCROLLBAR GAMER ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+  border-radius: 4px;
+}
+
+/* ===== SWEETALERT2 CON ESTÉTICA GAMER ===== */
+.swal2-popup {
+  background: #0d1424 !important;
+  border: 1px solid var(--neon-cyan) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.2) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.swal2-title {
+  font-family: 'Chakra Petch', sans-serif !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+}
+
+.swal2-confirm {
+  font-family: 'Chakra Petch', sans-serif !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  color: #050914 !important;
+  border-radius: 2px !important;
+}
+
+.gamer-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7, 11, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 210, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.gamer-nav-link {
+  font-family: 'Chakra Petch', sans-serif;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.gamer-nav-link:hover,
+.gamer-nav-link.active {
+  color: var(--neon-cyan);
+  border-bottom-color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+}

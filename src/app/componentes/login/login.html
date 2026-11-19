@@ -1,7 +1,7 @@
 <div class="login-container">
   <h2>Iniciar Sesión</h2>
   
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="gamer-card">
     <div>
       <label>Correo o Nombre de usuario</label>
       <input type="text" formControlName="identificador"
