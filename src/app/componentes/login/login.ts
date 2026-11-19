@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
+import { SessionService } from '../../service/session-service';
+import { AlertService } from '../../service/alert-service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,9 @@ import { Router, RouterLink } from '@angular/router';
 export class Login{
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
-  private router = inject(Router)
+  private router = inject(Router);
+  private sessionService = inject(SessionService);
+  private sweetAlert = inject(AlertService);
 
   // Regex: Al menos 8 caracteres, una mayúscula y un número
   private passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -25,7 +29,7 @@ export class Login{
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.http.post('http://localhost:3000/auth/login', this.loginForm.value)
+      this.http.post('https://red-social-back-end.vercel.app/auth/login', this.loginForm.value)
         .subscribe({
           next: (respuesta: any) => {
             // 1. Guardar todos los datos del usuario (incluyendo el _id) en el navegador      
@@ -33,11 +37,12 @@ export class Login{
             localStorage.setItem('usuario', JSON.stringify(respuesta.usuario));
             
             // 2. Redirigir al muro de publicaciones
+            this.sessionService.iniciarMonitoreo();
             this.router.navigate(['/publicaciones']);
           },
           error: (err) => {
             console.error('Error en login:', err);
-            alert('Usuario o contraseña incorrectos');
+            this.sweetAlert.error('Usuario o contraseña incorrectos');
           }
         });
     } else {

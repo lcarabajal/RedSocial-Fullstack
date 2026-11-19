@@ -1,0 +1,75 @@
+.modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-card {
+      background-color: #1e293b;
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 210, 255, 0.2);
+      border-radius: 14px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      color: #f8fafc;
+    }
+    .modal-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .modal-card h3 {
+      color: #00d2ff;
+      margin: 0 0 0.75rem 0;
+    }
+    .modal-card p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    .countdown {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f43f5e;
+      background: rgba(244, 63, 94, 0.1);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .btn-cancelar {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-cancelar:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+    .btn-renovar {
+      background: linear-gradient(135deg, #00d2ff 0%, #7c3aed 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn-renovar:hover {
+      transform: translateY(-2px);
+    }

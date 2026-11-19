@@ -2,13 +2,14 @@ import { Component, OnInit, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
+import { Sidebar } from '../sidebar/sidebar';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard-estadisticas',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, Sidebar],
   templateUrl: './dashboard-estadisticas.html',
   styleUrls: ['./dashboard-estadisticas.css']
 })
@@ -28,7 +29,7 @@ export class DashboardEstadisticas implements OnInit {
   }
 
   cargarEstadisticas() {
-    const url = `http://localhost:3000/estadisticas?inicio=${this.fechaInicio}&fin=${this.fechaFin}`;
+    const url = `https://red-social-back-end.vercel.app/estadisticas?inicio=${this.fechaInicio}&fin=${this.fechaFin}`;
     
     this.http.get<any>(url).subscribe(data => {
       console.log(data);

@@ -16,7 +16,7 @@ import { Sidebar } from '../sidebar/sidebar';
 export class Publicaciones implements OnInit {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
-  private apiUrl = 'http://localhost:3000/publicaciones';
+  private apiUrl = 'https://red-social-back-end.vercel.app/publicaciones';
 
 
   publicaciones = signal<IPublicacion[]>([]);

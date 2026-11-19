@@ -2,17 +2,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Sidebar } from '../sidebar/sidebar';
+import { AlertService } from '../../service/alert-service';
 
 @Component({
   selector: 'app-dashboard-usuarios',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, Sidebar],
   templateUrl: './dashboard-usuarios.html'
 })
 export class DashboardUsuarios implements OnInit {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
-
+  private sweetAlert = inject(AlertService);
   private passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
   usuarios = signal<any[]>([]);
@@ -44,7 +46,7 @@ export class DashboardUsuarios implements OnInit {
   }
 
   cargarUsuarios() {
-    this.http.get<any[]>('http://localhost:3000/auth/usuarios').subscribe({
+    this.http.get<any[]>('https://red-social-back-end.vercel.app/auth/usuarios').subscribe({
       next: (data) => this.usuarios.set(data)
     });
   }
@@ -53,8 +55,8 @@ export class DashboardUsuarios implements OnInit {
     // Si está activo (true) -> llamamos a DELETE para dar de baja
     // Si está inactivo (false) -> llamamos a POST para rehabilitar
     const peticion$ = usuario.activo
-      ? this.http.delete(`http://localhost:3000/usuarios/${usuario._id}`)
-      : this.http.post(`http://localhost:3000/usuarios/${usuario._id}/rehabilitar`, {});
+      ? this.http.delete(`https://red-social-back-end.vercel.app/usuarios/${usuario._id}`)
+      : this.http.post(`https://red-social-back-end.vercel.app/usuarios/${usuario._id}/rehabilitar`, {});
 
     peticion$.subscribe({
       next: (usuarioActualizado: any) => {
@@ -62,7 +64,7 @@ export class DashboardUsuarios implements OnInit {
           users.map(u => u._id === usuario._id ? { ...u, activo: usuarioActualizado.activo } : u)
         );
       },
-      error: (err) => alert(err.error?.message || 'Error al cambiar el estado del usuario')
+      error: (err) => this.sweetAlert.error(err.error?.message || 'Error al cambiar el estado del usuario')
     });
   }
 
@@ -97,14 +99,14 @@ export class DashboardUsuarios implements OnInit {
     formData.append('imagen', this.archivoImagen);
   }
 
-  this.http.post('http://localhost:3000/usuarios', formData).subscribe({
+  this.http.post('https://red-social-back-end.vercel.app/usuarios', formData).subscribe({
     next: (nuevo) => {
       this.usuarios.update(users => [...users, nuevo]);
       this.usuarioForm.reset({ perfil: 'usuario' });
       this.archivoImagen = null;
-      alert('Usuario creado exitosamente');
+      this.sweetAlert.exito('Usuario creado exitosamente');
     },
-    error: (err) => alert(err.error?.message || 'Error al crear usuario')
+    error: (err) => this.sweetAlert.error(err.error?.message || 'Error al crear usuario')
   });
 }
 }

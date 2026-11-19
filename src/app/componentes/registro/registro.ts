@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, 
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AlertService } from '../../service/alert-service';
 
 @Component({
   selector: 'app-registro',
@@ -13,7 +14,8 @@ import { Router } from '@angular/router';
 export class Registro {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
-  private router = inject(Router);
+  private router = inject(Router); 
+  private sweetAlert = inject(AlertService);
 
   private passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
   
@@ -63,10 +65,10 @@ export class Registro {
       // 3. Adjuntar la imagen (el nombre 'imagenPerfil' debe coincidir con el FileInterceptor del backend)
       formData.append('imagenPerfil', this.archivoImagen);
 
-      this.http.post('http://localhost:3000/auth/registro', formData)
+      this.http.post('https://red-social-back-end.vercel.app/auth/registro', formData)
         .subscribe({
           next: (respuesta) => {
-            console.log('Registro exitoso:', respuesta);
+            this.sweetAlert.exito('Usuario registrado con exito!');
             this.router.navigate(['login']);
           },
           error: (err) => console.error('Error en registro:', err)

@@ -202,3 +202,26 @@
   border: 1px solid #64748b;
   color: #cbd5e1;
 }
+
+.btn-cargar-mas {
+  display: block;
+  margin: 1.5rem auto 0;
+  background-color: rgba(0, 210, 255, 0.1);
+  color: #00d2ff;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cargar-mas:hover:not(:disabled) {
+  background-color: rgba(0, 210, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-cargar-mas:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

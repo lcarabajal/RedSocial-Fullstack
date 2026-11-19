@@ -1,76 +1,30 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { ModalExpiracion } from './componentes/modal-expiracion/modal-expiracion';
+import { SessionService } from './service/session-service';
+import { LoadingComponent } from './componentes/loading-component/loading-component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ModalExpiracion, LoadingComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
   protected readonly title = signal('redSocial');
-  private http = inject(HttpClient);
-  private router = inject(Router);
+  private sessionService = inject(SessionService);
 
-  isAppLoading = signal(true); // Pantalla de carga inicial
-  mostrarModalSesion = signal(false); // Modal de 10 min
-  
-  private temporizadorSesion: any;
+  // isAppLoading = signal(true); // Pantalla de carga inicial
 
   ngOnInit() {
-    this.validarTokenInicial();
-  }
+    // setTimeout(() => {
+    //   console.log('Pasan 1.5 segundos...');
+    //   this.isAppLoading.set(false);
+    // },1500);
 
-  validarTokenInicial() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      this.isAppLoading.set(false);
-      this.router.navigate(['/login']);
-      return;
+    if(localStorage.getItem('token')){
+      this.sessionService.iniciarMonitoreo();
     }
-
-    // Validar el token contra el backend 
-    this.http.post('http://localhost:3000/auth/autorizar', {}).subscribe({
-      next: () => {
-        this.isAppLoading.set(false);
-        this.iniciarTemporizadorSesion();
-        // Si la ruta actual es login/registro, lo mandamos al muro
-        if (this.router.url.includes('login')) this.router.navigate(['/publicaciones']);
-        
-      },
-      error: () => {
-        this.isAppLoading.set(false);
-        localStorage.clear();
-        this.router.navigate(['/login']);
-      }
-    });
-  }
-
-  iniciarTemporizadorSesion() {
-    clearTimeout(this.temporizadorSesion);
-    // 10 minutos = 600,000 milisegundos
-    this.temporizadorSesion = setTimeout(() => {
-      this.mostrarModalSesion.set(true);
-    }, 600000);
-    console.log(this.temporizadorSesion);
-  }
-
-  extenderSesion() {
-    // Petición para renovar el token
-    this.http.post<{token: string}>('http://localhost:3000/auth/refrescar', {}).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        this.mostrarModalSesion.set(false);
-        this.iniciarTemporizadorSesion(); // Reiniciar el reloj
-      }
-    });
-  }
-
-  cerrarSesion() {
-    this.mostrarModalSesion.set(false);
-    localStorage.clear();
-    this.router.navigate(['/login']);
   }
 }

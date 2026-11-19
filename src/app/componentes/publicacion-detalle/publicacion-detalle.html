@@ -12,14 +12,11 @@
         </div>
       </div>
 
-      
       <p class="texto-grande">{{ publicacion().texto }}</p>
       @if (publicacion().imagenUrl) {
         <img [src]="publicacion().imagenUrl" class="post-imagen">
       }
 
-
-      
       @if (esAdmin) {
         <div class="boton">
           <button 
@@ -70,8 +67,18 @@
         }
       </div>
     }
+    @if(hayMas()){
+      <button
+        type="button"
+        class="btn-cargar-mas"
+        (click)="cargarMas()"
+        [disabled]="cargandoComentarios()">
+        {{ cargandoComentarios() ? 'Cargando...' : 'Cargar más comentarios' }}
+      </button>
+    }
+    <br>
   </div>
-  
+    <br>
     <!-- Escribir Comentario -->
     <form [formGroup]="comentarioForm" (ngSubmit)="escribirComentario()">
         <textarea formControlName="texto" placeholder="Escribe un comentario..."></textarea>

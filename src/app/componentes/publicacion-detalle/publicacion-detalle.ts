@@ -1,9 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Sidebar } from '../sidebar/sidebar';
+import { AlertService } from '../../service/alert-service';
 
 @Component({
   selector: 'app-publicacion-detalle',
@@ -16,74 +17,109 @@ export class PublicacionDetalle implements OnInit {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
+  private sweetAlert = inject(AlertService);
+  private router = inject(Router);
 
   currentUserId = JSON.parse(localStorage.getItem('usuario') || '{}')._id;
   usuarioLogueado = JSON.parse(localStorage.getItem('usuario') || '{}');
   esAdmin = this.usuarioLogueado.perfil === 'admin';
 
   publicacion = signal<any>(null);
+
+  publicacionId = '';
   comentarios = signal<any[]>([]);
+  totalComentarios = signal<number>(0);
+  paginaActual = signal<number>(1);
+  hayMas = signal<boolean>(false);
+  cargandoComentarios = signal<boolean>(false);
+  private readonly LIMITE = 5;
   
-  paginaComentarios = signal<number>(1);
-  comentariosPorPagina = 5;
-  hayMasComentarios = signal<boolean>(true);
 
   comentarioEnEdicionId = signal<string | null>(null);
   textoEdicion = signal<string>('');
 
+
   comentarioForm: FormGroup = this.fb.group({ texto: ['', Validators.required] });
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    const id = this.route.snapshot.paramMap.get('id') || '';
+
+    this.publicacionId = id;
+
+    if(this.publicacionId){
+      this.cargarComentarios(1);
       this.cargarPublicacion(id);
-      this.cargarComentarios(id, true);
     }
+
   }
 
-  darDeBajaPublicacion(idPublicacion: string) {
-    if (confirm('¿Estás seguro de que deseas dar de baja esta publicación?')) {
-      this.http.put(`http://localhost:3000/publicaciones/${idPublicacion}/baja`, {}).subscribe({
+  async darDeBajaPublicacion(idPublicacion: string) {
+    if (await this.sweetAlert.confirmar('¿Estás seguro de que deseas dar de baja esta publicación?','Esta acción no se podra revertir', 'Confirmar')) {
+      this.http.put(`https://red-social-back-end.vercel.app/publicaciones/${idPublicacion}/baja`, {}).subscribe({
         next: () => {
-          // Opciones: redirigir al inicio o actualizar el signal
-          alert('Publicación dada de baja');
-          // this.router.navigate(['/']); // Necesitas inyectar Router
+          
+          this.sweetAlert.exito('Publicación dada de baja');
+          this.router.navigate(['/']); // Necesitas inyectar Router
         },
-        error: (err) => alert('Error al dar de baja')
+        error: (err) => this.sweetAlert.error('Error al dar de baja')
       });
     }
   }
 
   cargarPublicacion(id: string) {
-    this.http.get(`http://localhost:3000/publicaciones/${id}`).subscribe({
+    this.http.get(`https://red-social-back-end.vercel.app/publicaciones/${id}`).subscribe({
       next: (data) => this.publicacion.set(data) // Emitir nuevo valor
     });
   }
 
-  cargarComentarios(pubId: string, inicial = false) {
-    if (inicial) {
-      this.paginaComentarios.set(1);
-      this.comentarios.set([]);
-    }
+  cargarComentarios(pagina: number) {
+    if (this.cargandoComentarios()) return;
+    this.cargandoComentarios.set(true);
 
-    const url = `http://localhost:3000/publicaciones/${pubId}/comentarios?page=${this.paginaComentarios()}&limit=${this.comentariosPorPagina}`;
-    
-    this.http.get<any[]>(url).subscribe({
-      next: (nuevos) => {
-        // Combinamos los comentarios actuales con los nuevos sin perder reactividad
-        this.comentarios.update(actuales => [...actuales, ...nuevos]); 
-        console.log(nuevos);
-        if (nuevos.length < this.comentariosPorPagina) {
-          this.hayMasComentarios.set(false);
-        }
-      }
+    this.obtenerComentarios(this.publicacionId, pagina, this.LIMITE)
+      .subscribe({
+        next: (res) => {
+          this.comentarios.update((actuales) => {
+            if (pagina === 1) return res.comentarios;
+
+            // Evita duplicados en @for si se agregó un comentario nuevo mientras se paginaba
+            const idsExistentes = new Set(actuales.map((c) => c._id));
+            const nuevos = res.comentarios.filter((c) => !idsExistentes.has(c._id));
+            return [...actuales, ...nuevos];
+          });
+
+          this.totalComentarios.set(res.total);
+          this.paginaActual.set(res.paginaActual);
+          this.hayMas.set(res.hayMas);
+          this.cargandoComentarios.set(false);
+
+          console.log(this.comentarios());
+        },
+        error: () => this.cargandoComentarios.set(false),
+      });
+  }
+
+  agregarComentarioALista(nuevoComentario: any) {
+    this.comentarios.update((actuales) => [nuevoComentario, ...actuales]);
+    this.totalComentarios.update((t) => t + 1);
+  }
+
+  obtenerComentarios(pubId: string, page: number = 1, limit: number = 5) {
+    return this.http.get<{
+      comentarios: any[];
+      total: number;
+      paginaActual: number;
+      totalPaginas: number;
+      hayMas: boolean;
+    }>(`https://red-social-back-end.vercel.app/publicaciones/${pubId}/comentarios`, {
+      params: { page, limit }
     });
   }
 
   cargarMas() {
-    this.paginaComentarios.update(p => p + 1);
-    const pub = this.publicacion(); // Leemos el valor del signal
-    if (pub) this.cargarComentarios(pub._id);
+    if (this.hayMas()) {
+      this.cargarComentarios(this.paginaActual() + 1);
+    }
   }
 
   escribirComentario() {
@@ -96,7 +132,7 @@ export class PublicacionDetalle implements OnInit {
 
     if (!pub) return;
 
-    this.http.post(`http://localhost:3000/publicaciones/${pub._id}/comentarios`, payload).subscribe({
+    this.http.post(`https://red-social-back-end.vercel.app/publicaciones/${pub._id}/comentarios`, payload).subscribe({
       next: (nuevoComentario) => {
         // Agregamos el nuevo comentario al inicio de la lista
         this.comentarios.update(actuales => [nuevoComentario, ...actuales]);
@@ -112,7 +148,7 @@ export class PublicacionDetalle implements OnInit {
   }
 
   guardarEdicion(comentarioId: string) {
-    this.http.put(`http://localhost:3000/publicaciones/comentarios/${comentarioId}`, { texto: this.textoEdicion() }).subscribe({
+    this.http.put(`https://red-social-back-end.vercel.app/publicaciones/comentarios/${comentarioId}`, { texto: this.textoEdicion() }).subscribe({
       next: () => {
         // Actualizamos solo el comentario editado dentro del Signal
         this.comentarios.update(actuales => 

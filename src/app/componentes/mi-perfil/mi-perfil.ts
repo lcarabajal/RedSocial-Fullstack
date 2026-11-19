@@ -25,7 +25,7 @@ export class MiPerfil implements OnInit {
       this.usuario = JSON.parse(usuarioStr);
       
       // 2. Pedir sus últimas 3 publicaciones a MongoDB
-      const url = `http://localhost:3000/publicaciones/usuario/${this.usuario._id}?limit=3`;
+      const url = `https://red-social-back-end.vercel.app/publicaciones/usuario/${this.usuario._id}?limit=3`;
       
       this.http.get<IPublicacion[]>(url).subscribe({
         next: (data) => this.ultimasPublicaciones.set(data),
