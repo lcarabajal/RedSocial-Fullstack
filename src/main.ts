@@ -5,7 +5,18 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  app.enableCors(); //Habilita la comunicación al frontEnd
+  app.enableCors({
+    origin:[
+      'http://localhost:4200',
+      'https://tu-proyecto.web.app',
+      'https://tu-proyecto.firebaseapp.com'
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
+  } 
+         
+  ); //Habilita la comunicación al frontEnd
 
   app.useGlobalPipes(new ValidationPipe()); //Habilita el uso de validators en el back
 
