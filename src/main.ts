@@ -8,8 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin:[
       'http://localhost:4200',
-      'https://tu-proyecto.web.app',
-      'https://tu-proyecto.firebaseapp.com'
+      'https://red-social-brown.vercel.app',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',
