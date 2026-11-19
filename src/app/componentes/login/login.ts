@@ -42,7 +42,12 @@ export class Login{
           },
           error: (err) => {
             console.error('Error en login:', err);
-            this.sweetAlert.error('Usuario o contraseña incorrectos');
+            if(err.error.message){
+              this.sweetAlert.error("Usted fue deshabilitado para entrar :C");
+            }else{
+
+              this.sweetAlert.error('Usuario o contraseña incorrectos');
+            }
           }
         });
     } else {
