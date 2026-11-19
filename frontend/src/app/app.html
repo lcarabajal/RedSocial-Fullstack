@@ -1,0 +1,16 @@
+<!-- Pantalla de Carga -->
+<!-- @if (isAppLoading()) {
+  <div class="pantalla-cargando">
+    <div class="spinner"></div>
+    <p>Cargando aplicación...</p>
+  </div>
+}  -->
+
+<div class="app-layout">
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+</div>
+
+<app-modal-expiracion></app-modal-expiracion>
+<app-loading-component></app-loading-component>

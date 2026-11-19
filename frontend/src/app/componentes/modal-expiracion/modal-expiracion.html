@@ -1,0 +1,19 @@
+@if (sessionService.mostrarModalAdvertencia()) {
+    <div class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-icon">⚠️</div>
+        <h3>Tu sesión está por expirar</h3>
+        <p>
+        Por seguridad, tu sesión finalizará automáticamente en:
+        </p>
+        <div class="countdown">
+        {{ sessionService.segundosRestantes() }}s
+        </div>
+
+        <div class="modal-actions">
+        <button class="btn-cancelar" (click)="cerrar()">Okey...</button>
+        <button class="btn-renovar" (click)="extenderSesion()">Continuar conectado</button>
+        </div>
+    </div>
+    </div>
+}

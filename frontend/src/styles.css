@@ -1,0 +1,693 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Paleta Moderna: Morado y Rojo */
+  --primary-purple: #7c3aed;
+  --primary-purple-hover: #6d28d9;
+  --secondary-red: #e11d48;
+  --brand-gradient: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-red) 100%);
+  
+  /* Fondos Oscuros */
+  --bg-dark: #0f172a;
+  --surface-dark: #1e293b;
+  --input-bg: #0f172a;
+  
+  /* Texto */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --error-text: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+/* Estilo global para botones */
+button {
+  background: var(--brand-gradient);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Estilo global para inputs */
+input, textarea, select {
+  width: 100%;
+  background-color: var(--input-bg);
+  border: 1px solid #334155;
+  color: var(--text-main);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--primary-purple);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+input[type="file"] {
+  padding: 8px;
+  background-color: transparent;
+  border: 1px dashed #334155;
+}
+
+small {
+  color: var(--error-text);
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Aca dejo mis componentes para que ya esten bien lindos */
+.login-container, .registro-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+form {
+  background-color: var(--surface-dark);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.registro-container form {
+  max-width: 600px; /* El registro necesita más espacio */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 24px;
+  font-weight: 700;
+  /* Texto con degradado */
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+form > div {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Para los campos de Nombre y Apellido que van en la misma línea */
+.row-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+input.input-error {
+  border-color: #f87171;
+}
+
+.feed-container {
+  max-width: 600px; /* Limita el ancho del muro */
+  margin: 0 auto;   /* Lo centra en la pantalla */
+  padding: 2rem 1rem;
+}
+
+.feed-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Evitar que el select sea enorme */
+.feed-controls select {
+  width: auto;
+  min-width: 150px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+/* Evitar botones de paginación gigantes */
+.pagination button {
+  width: auto;
+}
+/* Controles superiores del Feed */
+.feed-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.feed-controls select { width: 200px; }
+
+/* Paginación */
+.pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; }
+.pagination button { width: auto; }
+
+/* Avatares */
+.avatar-small { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-purple); }
+.avatar-large { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--secondary-red); }
+
+/* Layout de cabeceras de post */
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.post-meta { display: flex; flex-direction: column; flex-grow: 1; }
+.post-meta small { color: var(--text-muted); }
+/* Cards globales para publicaciones y perfil */
+.post-card, .card {
+  background-color: var(--surface-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Botones específicos */
+button.btn-like { background: transparent; border: 1px solid #334155; width: auto; color: var(--text-main); }
+button.btn-like.liked { border-color: var(--secondary-red); color: var(--secondary-red); }
+button.btn-delete { background: transparent; color: var(--error-text); width: auto; padding: 6px 12px; font-size: 12px; border: 1px solid var(--error-text); }
+button.btn-delete:hover { background: var(--error-text); color: white; }
+
+
+/* Comentarios en el perfil */
+.comentarios-seccion {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #334155;
+}
+.comentario-item {
+  background: var(--bg-dark);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+.comentario-item strong { color: var(--primary-purple); }
+
+
+/* Contenedor principal para alinearlos en fila */
+.radio-group {
+  display: flex !important ;
+  flex-direction: row !important ; 
+  gap: 2rem !important ; 
+  margin: 1rem 0 1.5rem 0 !important ;
+}
+
+/* Alinea el círculo y el texto perfectamente en el centro */
+.radio-group label {
+  display: flex !important ;
+  align-items: center !important ;
+  gap: 0.5rem !important ; 
+  font-size: 0.9rem !important ;
+  color: #94a3b8 !important ; /* Mismo color de tus otros labels */
+  cursor: pointer !important ;
+}
+
+/* Oculta el diseño por defecto del navegador (los círculos blancos feos) */
+.radio-group input[type="radio"] {
+  appearance: none !important ;
+  -webkit-appearance: none !important ;
+  width: 20px !important ;
+  height: 20px !important ;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important ; /* Mismo borde de tus inputs */
+  border-radius: 50% !important ;
+  background-color: rgba(0, 0, 0, 0.2) !important ; /* Mismo fondo oscuro de tus inputs */
+  cursor: pointer !important ;
+  display: flex !important ;
+  align-items: center !important ;
+  justify-content: center !important ;
+  transition: all 0.2s ease !important ;
+  margin: 0 !important ;
+}
+
+/* Efecto al pasar el mouse */
+.radio-group input[type="radio"]:hover {
+  border-color: #00d2ff !important ; /* El color cyan de tu título "Crear Nuevo Usuario" */
+}
+
+/* Estilo cuando está seleccionado */
+.radio-group input[type="radio"]:checked {
+  border-color: #00d2ff !important ;
+}
+
+/* El punto interior brillante cuando está activo */
+.radio-group input[type="radio"]:checked::after {
+  content: '' !important ;
+  width: 10px !important ;
+  height: 10px !important ;
+  background-color: #00d2ff !important ; 
+  border-radius: 50% !important ;
+  display: block !important ;
+}
+
+
+/* Contenedor de la tabla */
+.tabla-container {
+  background-color: var(--surface-dark, #1e293b);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Título de la tabla */
+.tabla-container h3 {
+  color: #00d2ff; /* Cyan para mantener consistencia con tu formulario */
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+/* Estructura base de la tabla */
+.tabla-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Encabezados de las columnas */
+.tabla-container th {
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8; /* Gris claro para diferenciar del contenido */
+  padding: 1rem 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Celdas de información */
+.tabla-container td {
+  padding: 1rem 0.5rem;
+  color: #f8fafc; /* Texto blanco brillante para máxima legibilidad */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+/* Efecto visual al pasar el mouse sobre una fila completa */
+.tabla-container tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tabla-container tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03); /* Iluminación sutil */
+}
+
+/* Ajustes para el botón de Alta/Baja */
+.tabla-container td button {
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.tabla-container td button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.tabla-container td button:active {
+  transform: translateY(1px);
+}
+
+/* Contenedor principal */
+.dashboard-container {
+  padding: 1rem;
+  color: #f8fafc;
+}
+
+.dashboard-container h2 {
+  color: #00d2ff;
+  margin-bottom: 2rem;
+}
+
+/* -------------------------------------
+   TARJETA DE FILTROS (Fechas)
+-------------------------------------- */
+.filtros-card {
+  background-color: var(--surface-dark, #1e293b);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.filtros-card label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Estilo para los inputs de fecha (modo oscuro) */
+.filtros-card input[type="date"] {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  /* color-scheme le avisa al navegador que abra el calendario en modo oscuro */
+  color-scheme: dark; 
+}
+
+.filtros-card input[type="date"]:focus {
+  border-color: #00d2ff;
+}
+
+/* Botón de actualizar */
+.filtros-card button {
+  background: linear-gradient(to right, #b026ff, #ff26a5); /* Similar a tu botón de registro */
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto; /* Empuja el botón a la derecha */
+}
+
+.filtros-card button:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+/* -------------------------------------
+   GRILLA DE GRÁFICOS
+-------------------------------------- */
+.graficos-grid {
+  display: grid;
+  /* Crea columnas responsivas que no sean menores a 350px */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+/* Cajas individuales de cada gráfico */
+.grafico-box {
+  background-color: var(--surface-dark, #1e293b);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grafico-box h3 {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1rem;
+}
+
+/* Control vital para Chart.js */
+.grafico-box canvas {
+  width: 100% !important;
+  max-height: 300px; /* Evita que los gráficos crezcan infinitamente hacia abajo */
+}
+
+:root {
+  --bg-main: #070b14;
+  --bg-card: #0f1626;
+  --bg-card-hover: #141d33;
+  --neon-cyan: #00d2ff;
+  --neon-purple: #9d4edd;
+  --neon-pink: #ff2a85;
+  --neon-green: #00f59b;
+  --text-main: #e2e8f0;
+  --text-muted: #8b9bb4;
+  --border-hud: rgba(0, 210, 255, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-main);
+  /* Fondo con grilla técnica y luz ambiental neón */
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(0, 210, 255, 0.12), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(157, 78, 221, 0.12), transparent 40%),
+    linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, button, .gamer-font {
+  font-family: 'Chakra Petch', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ===== TARJETAS ESTILO HUD (Publicaciones, Perfil, Login) ===== */
+.gamer-card {
+  position: relative;
+  background: linear-gradient(160deg, rgba(15, 22, 38, 0.95), rgba(9, 13, 24, 0.98));
+  border: 1px solid var(--border-hud);
+  border-radius: 4px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Barra neón decorativa en el borde superior */
+.gamer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), transparent);
+}
+
+.gamer-card:hover {
+  border-color: rgba(0, 210, 255, 0.55);
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.14);
+}
+
+/* ===== BOTÓN GAMER CON ESQUINAS CORTADAS ===== */
+.btn-gamer {
+  position: relative;
+  background: linear-gradient(135deg, var(--neon-cyan), #0088cc);
+  color: #050914;
+  font-weight: 700;
+  border: none;
+  padding: 0.7rem 1.6rem;
+  cursor: pointer;
+  /* Corte diagonal en esquina superior izquierda e inferior derecha */
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.btn-gamer:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.75));
+}
+
+.btn-gamer:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Variante secundaria (para cancelar, me gusta, cargar más) */
+.btn-gamer-outline {
+  background: rgba(0, 210, 255, 0.08);
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-gamer-outline:hover:not(:disabled) {
+  background: rgba(0, 210, 255, 0.2);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
+}
+
+/* Variante peligro / admin (rojo-magenta neón) */
+.btn-gamer-danger {
+  background: linear-gradient(135deg, var(--neon-pink), #b5175c);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: filter 0.2s ease;
+}
+
+.btn-gamer-danger:hover {
+  filter: drop-shadow(0 0 10px rgba(255, 42, 133, 0.7));
+}
+
+/* ===== INPUTS ESTILO CONSOLA / HUD ===== */
+.gamer-input {
+  width: 100%;
+  background: rgba(7, 11, 20, 0.85);
+  border: 1px solid rgba(139, 155, 180, 0.28);
+  border-left: 3px solid var(--neon-cyan);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gamer-input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.22);
+}
+
+/* ===== AVATAR CON ARO NEÓN + BADGE DE ROL ===== */
+.gamer-avatar {
+  border-radius: 50%;
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.45);
+  object-fit: cover;
+}
+
+.gamer-badge {
+  display: inline-block;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  background: rgba(157, 78, 221, 0.18);
+  color: #d8b4fe;
+  border: 1px solid var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ===== SCROLLBAR GAMER ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+  border-radius: 4px;
+}
+
+/* ===== SWEETALERT2 CON ESTÉTICA GAMER ===== */
+.swal2-popup {
+  background: #0d1424 !important;
+  border: 1px solid var(--neon-cyan) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 30px rgba(0, 210, 255, 0.2) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.swal2-title {
+  font-family: 'Chakra Petch', sans-serif !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+}
+
+.swal2-confirm {
+  font-family: 'Chakra Petch', sans-serif !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  color: #050914 !important;
+  border-radius: 2px !important;
+}
+
+.gamer-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7, 11, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 210, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.gamer-nav-link {
+  font-family: 'Chakra Petch', sans-serif;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.gamer-nav-link:hover,
+.gamer-nav-link.active {
+  color: var(--neon-cyan);
+  border-bottom-color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+}
